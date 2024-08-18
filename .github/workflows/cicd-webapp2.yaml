@@ -1,4 +1,4 @@
-name: WebApp1 CI/CD
+name: WebApp2 CI/CD
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - '.github/workflows/cicd-webapp2.yaml'
 
 env:
-  AZURE_WEBAPP_NAME: WebApp2
+  AZURE_WEBAPP_NAME: webapp2
 
 jobs:
   build-and-deploy:

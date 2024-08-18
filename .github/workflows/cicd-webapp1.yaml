@@ -8,7 +8,7 @@ on:
       - '.github/workflows/cicd-webapp1.yaml'
 
 env:
-  AZURE_WEBAPP_NAME: WebApp1    
+  AZURE_WEBAPP_NAME: webapp1    
 
 jobs:
   build-and-deploy:
