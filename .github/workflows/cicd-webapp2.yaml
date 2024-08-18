@@ -4,11 +4,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'WebApp1/**'
-      - '.github/workflows/cicd-webapp1.yaml'
+      - 'WebApp2/**'
+      - '.github/workflows/cicd-webapp2.yaml'
 
 env:
-  AZURE_WEBAPP_NAME: WebApp1    
+  AZURE_WEBAPP_NAME: WebApp2
 
 jobs:
   build-and-deploy:

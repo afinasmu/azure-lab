@@ -1,4 +1,3 @@
-// Parameters
 param location string = resourceGroup().location
 param appServicePlanName string = 'myAppServicePlan'
 param appService1Name string = 'WebApp1'
@@ -9,13 +8,13 @@ param sqlDatabaseName string = 'mySqlDatabase'
 param administratorLogin string
 @secure()
 param administratorLoginPassword string
+param acrName string = 'finazure'
+param dockerImageAndTag string = 'WebApp1:latest'
 
-// Variables
 var vnetAddress = '10.0.0.0/16'
 var webSubnetAddress = '10.0.1.0/24'
 var appGatewaySubnetAddress = '10.0.2.0/24'
 
-// Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: vnetName
   location: location
@@ -42,25 +41,31 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
-// App Service Plan
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: appServicePlanName
   location: location
   sku: {
-    name: 'S1'
-    tier: 'Standard'
+    name: 'P1v2'
+    tier: 'PremiumV2'
+  }
+  kind: 'linux'
+  properties: {
+    reserved: true
   }
 }
 
-// App Services
 resource appService1 'Microsoft.Web/sites@2021-02-01' = {
   name: appService1Name
   location: location
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
-      netFrameworkVersion: 'v8.0'
+      linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${dockerImageAndTag}'
+      alwaysOn: true
     }
+  }
+  identity: {
+    type: 'SystemAssigned'
   }
 }
 
@@ -70,12 +75,15 @@ resource appService2 'Microsoft.Web/sites@2021-02-01' = {
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
-      netFrameworkVersion: 'v8.0'
+      linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${dockerImageAndTag}'
+      alwaysOn: true
     }
+  }
+  identity: {
+    type: 'SystemAssigned'
   }
 }
 
-// SQL Server
 resource sqlServer 'Microsoft.Sql/servers@2021-05-01-preview' = {
   name: sqlServerName
   location: location
@@ -85,7 +93,6 @@ resource sqlServer 'Microsoft.Sql/servers@2021-05-01-preview' = {
   }
 }
 
-// SQL Database
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2021-05-01-preview' = {
   parent: sqlServer
   name: sqlDatabaseName
@@ -96,7 +103,6 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2021-05-01-preview' = {
   }
 }
 
-// Application Gateway
 resource appGateway 'Microsoft.Network/applicationGateways@2021-05-01' = {
   name: 'myAppGateway'
   location: location
@@ -195,7 +201,6 @@ resource appGateway 'Microsoft.Network/applicationGateways@2021-05-01' = {
   }
 }
 
-// Outputs
 output appService1Hostname string = appService1.properties.defaultHostName
 output appService2Hostname string = appService2.properties.defaultHostName
 output sqlServerFqdn string = sqlServer.properties.fullyQualifiedDomainName
