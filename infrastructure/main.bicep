@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param appServicePlanName string = 'myAppServicePlan'
-param appService1Name string = 'WebApp1'
-param appService2Name string = 'WebApp2'
+param appService1Name string = 'Afinas-WebApp1'
+param appService2Name string = 'Afinas-WebApp2'
 param vnetName string = 'myVNet'
 param sqlServerName string = 'mySqlServer'
 param sqlDatabaseName string = 'mySqlDatabase'
@@ -9,7 +9,7 @@ param administratorLogin string
 @secure()
 param administratorLoginPassword string
 param acrName string = 'finazure'
-param dockerImageAndTag string = 'WebApp1:latest'
+param dockerImageAndTag string = 'webapp1:latest'
 
 var vnetAddress = '10.0.0.0/16'
 var webSubnetAddress = '10.0.1.0/24'
@@ -45,8 +45,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: appServicePlanName
   location: location
   sku: {
-    name: 'P1v2'
-    tier: 'PremiumV2'
+    name: 'S1'
+    tier: 'Standard'
   }
   kind: 'linux'
   properties: {
